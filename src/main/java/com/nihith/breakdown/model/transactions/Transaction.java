@@ -19,12 +19,13 @@ public class Transaction {
     private String debitorId;
     private String creditorId;
     private Date timestamp;
+    private String groupId;
 
     Transaction() {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    Transaction(String transactionName, String transactionDescription, String debitorId, String creditorId, BigDecimal amount, Date timestamp) {
+    Transaction(String transactionName, String transactionDescription, String debitorId, String creditorId, BigDecimal amount, Date timestamp, String groupId) {
 
         this.uuid = UUID.randomUUID().toString();
         this.transactionName = transactionName;
@@ -33,7 +34,16 @@ public class Transaction {
         this.creditorId = creditorId;
         this.amount = amount;
         this.timestamp = timestamp;
+        this.groupId = groupId;
 
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public String getUuid() {
@@ -102,6 +112,7 @@ public class Transaction {
                 ", debitorId='" + debitorId + '\'' +
                 ", creditorId='" + creditorId + '\'' +
                 ", timestamp=" + timestamp +
+                ", groupId='" + groupId + '\'' +
                 '}';
     }
 }
