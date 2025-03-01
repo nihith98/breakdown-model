@@ -2,10 +2,10 @@ package com.nihith.breakdown.model.transactions;
 
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,7 +17,7 @@ public class Transaction {
     private String transactionDescription;
     private BigDecimal amount;
     private String debitorId;
-    private String creditorId;
+    private List<String> creditorList;
     private Date timestamp;
     private String groupId;
 
@@ -25,13 +25,13 @@ public class Transaction {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    Transaction(String transactionName, String transactionDescription, String debitorId, String creditorId, BigDecimal amount, Date timestamp, String groupId) {
+    Transaction(String transactionName, String transactionDescription, String debitorId, List<String> creditorList, BigDecimal amount, Date timestamp, String groupId) {
 
         this.uuid = UUID.randomUUID().toString();
         this.transactionName = transactionName;
         this.transactionDescription = transactionDescription;
         this.debitorId = debitorId;
-        this.creditorId = creditorId;
+        this.creditorList = creditorList;
         this.amount = amount;
         this.timestamp = timestamp;
         this.groupId = groupId;
@@ -86,12 +86,12 @@ public class Transaction {
         this.debitorId = debitorId;
     }
 
-    public String getCreditorId() {
-        return creditorId;
+    public List<String> getCreditorList() {
+        return creditorList;
     }
 
-    public void setCreditorId(String creditorId) {
-        this.creditorId = creditorId;
+    public void setCreditorList(List<String> creditorList) {
+        this.creditorList = creditorList;
     }
 
     public Date getTimestamp() {
@@ -110,7 +110,7 @@ public class Transaction {
                 ", transactionDescription='" + transactionDescription + '\'' +
                 ", amount=" + amount +
                 ", debitorId='" + debitorId + '\'' +
-                ", creditorId='" + creditorId + '\'' +
+                ", creditorList=" + creditorList +
                 ", timestamp=" + timestamp +
                 ", groupId='" + groupId + '\'' +
                 '}';
