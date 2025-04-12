@@ -37,7 +37,7 @@ public class Transaction {
     @NotEmpty
     private String groupId;
 
-    Transaction() {
+    public Transaction() {
         this.uuid = UUID.randomUUID().toString();
     }
 
