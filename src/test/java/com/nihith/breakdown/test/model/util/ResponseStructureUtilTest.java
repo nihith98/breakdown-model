@@ -3,7 +3,6 @@ package com.nihith.breakdown.test.model.util;
 import com.nihith.breakdown.model.response.MessageType;
 import com.nihith.breakdown.model.response.ResponseStatus;
 import com.nihith.breakdown.model.response.ResponseStructure;
-import com.nihith.breakdown.model.util.ObjectMapperUtil;
 import com.nihith.breakdown.model.util.ResponseStructureUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = ObjectMapperUtil.class)
+@SpringBootTest(classes = ResponseStructureUtil.class)
 public class ResponseStructureUtilTest {
 
     @Test
