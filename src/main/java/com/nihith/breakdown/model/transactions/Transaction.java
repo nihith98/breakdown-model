@@ -1,41 +1,60 @@
 package com.nihith.breakdown.model.transactions;
 
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.nihith.breakdown.model.individuals.PaidFor;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
+/**
+ * Model for storing information about single transaction
+ */
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Transaction {
 
-
+    private static final long serialVersionUID = 1L;
     private String uuid;
+    @NotEmpty
     private String transactionName;
     private String transactionDescription;
+    private TransactionType transactionType;
+    @NotNull
+    @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal amount;
-    private String debitorId;
-    private List<String> creditorList;
+    @NotEmpty
+    private String paidById;
+    @NotNull
+    private List<PaidFor> paidForList;
+    private SplitType splitType;
     private Date timestamp;
+    @NotEmpty
     private String groupId;
 
     Transaction() {
         this.uuid = UUID.randomUUID().toString();
     }
 
-    Transaction(String transactionName, String transactionDescription, String debitorId, List<String> creditorList, BigDecimal amount, Date timestamp, String groupId) {
-
-        this.uuid = UUID.randomUUID().toString();
-        this.transactionName = transactionName;
-        this.transactionDescription = transactionDescription;
-        this.debitorId = debitorId;
-        this.creditorList = creditorList;
-        this.amount = amount;
-        this.timestamp = timestamp;
-        this.groupId = groupId;
-
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "uuid='" + uuid + '\'' +
+                ", transactionName='" + transactionName + '\'' +
+                ", transactionDescription='" + transactionDescription + '\'' +
+                ", transactionType=" + transactionType +
+                ", amount=" + amount +
+                ", paidById='" + paidById + '\'' +
+                ", paidForList=" + paidForList +
+                ", splitType=" + splitType +
+                ", timestamp=" + timestamp +
+                ", groupId='" + groupId + '\'' +
+                '}';
     }
 
     public String getGroupId() {
@@ -78,21 +97,6 @@ public class Transaction {
         this.amount = amount;
     }
 
-    public String getDebitorId() {
-        return debitorId;
-    }
-
-    public void setDebitorId(String debitorId) {
-        this.debitorId = debitorId;
-    }
-
-    public List<String> getCreditorList() {
-        return creditorList;
-    }
-
-    public void setCreditorList(List<String> creditorList) {
-        this.creditorList = creditorList;
-    }
 
     public Date getTimestamp() {
         return timestamp;
@@ -102,17 +106,35 @@ public class Transaction {
         this.timestamp = timestamp;
     }
 
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "uuid='" + uuid + '\'' +
-                ", transactionName='" + transactionName + '\'' +
-                ", transactionDescription='" + transactionDescription + '\'' +
-                ", amount=" + amount +
-                ", debitorId='" + debitorId + '\'' +
-                ", creditorList=" + creditorList +
-                ", timestamp=" + timestamp +
-                ", groupId='" + groupId + '\'' +
-                '}';
+    public List<PaidFor> getPaidForList() {
+        return paidForList;
+    }
+
+    public void setPaidForList(List<PaidFor> paidForList) {
+        this.paidForList = paidForList;
+    }
+
+    public SplitType getSplitType() {
+        return splitType;
+    }
+
+    public void setSplitType(SplitType splitType) {
+        this.splitType = splitType;
+    }
+
+    public String getPaidById() {
+        return paidById;
+    }
+
+    public void setPaidById(String paidById) {
+        this.paidById = paidById;
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 }

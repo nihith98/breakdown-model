@@ -1,22 +1,22 @@
 package com.nihith.breakdown.model.transactions;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Entity
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TransactionList {
 
+    private String id;
     private String groupId;
     private List<Transaction> TransactionList;
-    private TransactionType type;
     private BigDecimal totalExpenditure;
 
     public TransactionList(String groupId, List<Transaction> transactionList, TransactionType type, BigDecimal totalExpenditure) {
         this.groupId = groupId;
         TransactionList = transactionList;
-        this.type = type;
         this.totalExpenditure = totalExpenditure;
     }
 
@@ -24,10 +24,6 @@ public class TransactionList {
         this.groupId = groupId;
     }
 
-    public TransactionList(String groupId, TransactionType type) {
-        this.groupId = groupId;
-        this.type = type;
-    }
 
     public String getGroupId() {
         return groupId;
@@ -45,14 +41,6 @@ public class TransactionList {
         TransactionList = transactionList;
     }
 
-    public TransactionType getType() {
-        return type;
-    }
-
-    public void setType(TransactionType type) {
-        this.type = type;
-    }
-
     public BigDecimal getTotalExpenditure() {
         return totalExpenditure;
     }
@@ -66,8 +54,8 @@ public class TransactionList {
         return "TransactionList{" +
                 "groupId='" + groupId + '\'' +
                 ", TransactionList=" + TransactionList +
-                ", type=" + type +
                 ", totalExpenditure=" + totalExpenditure +
                 '}';
     }
+
 }
