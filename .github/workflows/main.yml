@@ -45,6 +45,9 @@ jobs:
         # -B runs in batch mode (non-interactive)
         run: mvn -B package --file pom.xml
 
+      - name: Run Static Analysis (SpotBugs) # Example for Java
+        run: mvn spotbugs:check
+
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
