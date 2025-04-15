@@ -4,12 +4,12 @@ name: Java CI with Maven and Docker
 on:
   # Trigger on pushes to the main branch or any tags starting with 'v'
   push:
-    branches: [ main, "release/alpha/v1.0" ]
+    branches: [ main, release/alpha/v1.0 ]
     tags: [ 'v*' ]
   # Trigger on pull requests opened or updated against the main branch
   pull_request:
     types: [ opened, reopened, synchronize ]
-    branches: [ "release/alpha/v1.0" ]
+    branches: [ release/alpha/v1.0 ]
 
 # Define environment variables for Docker Hub - Use GitHub Variables/Secrets
 env:
