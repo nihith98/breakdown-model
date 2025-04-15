@@ -52,15 +52,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-          tags: |
-            # tag latest for default branch push
-            type=edge,branch=${{ github.event.repository.default_branch }}
-            # tag based on git tag (e.g., v1.0.0 -> 1.0.0)
-            type=ref,event=tag
-            # tag based on git branch name (e.g., feature/xyz -> feature-xyz) - only on pull_request or non-default branch push
-            type=ref,event=branch,enable=${{ github.ref!= format('refs/heads/{0}', github.event.repository.default_branch) }}
-            # tag based on short commit sha
-            type=sha,prefix=sha-
+          tags: type=sha,prefix=sha-
+            
 
       - name: Log in to Docker Hub
         # Only log in if pushing (i.e., not a PR event typically, unless pushing directly from PR is desired)
@@ -69,10 +62,6 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }} # Use the secret directly here
-
-      - name: Tag Docker image
-        run: docker tag ${{ github.repository }}:${{ github.head_ref }} ${{ env.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{ github.event.pull_request.head.ref }}
-        
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
