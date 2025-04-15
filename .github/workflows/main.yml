@@ -14,8 +14,8 @@ on:
       - synchronize
     branches:
       - release/alpha/v1.0
-      - release/**
-      - feature/**
+      - release/*
+      - feature/*
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   IMAGE_NAME: ${{ github.repository }}
