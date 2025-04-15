@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.nihith</groupId>
     <artifactId>breakdown-model</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>breakdown-model</name>
     <description>Library for breakDown data models</description>
     <packaging>jar</packaging>
