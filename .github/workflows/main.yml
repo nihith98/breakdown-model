@@ -1,81 +1,71 @@
+---
 name: Feature to Release CI/CD
-
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types:
+      - opened
+      - reopened
+      - synchronize
     branches:
-      - 'release/**'
+      - release/**
     paths:
-      - '**' # Optional: Limit to changes in specific paths
-  # Optional: Trigger on merge to release as well (adjust based on your flow)
-  # push:
-  #   branches:
-  #     - 'release'
-
+      - "**"
 jobs:
   build_and_test:
     name: Build, Test, and Analyze
     runs-on: ubuntu-latest
-
     steps:
+      - name: Echo Test
+        run: echo "Workflow started!"
       - name: Checkout code
         uses: actions/checkout@v3
-
-      # --- Build Stage ---
-      - name: Set up JDK # Example for Java
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'adoptopenjdk'
-      - name: Build with Maven # Adjust for your build tool
+          java-version: "17"
+          distribution: adoptopenjdk
+      - name: Build with Maven
         run: mvn clean package
-
-      # --- Code Quality Stage ---
-      - name: Run Unit Tests # Adjust for your testing framework
+      - name: Run Unit Tests
         run: mvn test
-
-      - name: Run Static Analysis (SpotBugs) # Example for Java
+      - name: Run Static Analysis (SpotBugs)
         run: mvn spotbugs:check
-
-      # Add more code quality checks as needed (linters, etc.)
-
-      # --- Build Docker Image ---
       - name: Build Docker image
-        if: github.event_name == 'pull_request' # Only build image on PR
+        if: github.event_name == 'pull_request'
         run: docker build -t ${{ github.repository }}:${{ github.head_ref }} .
-
       - name: Save Docker Image Artifact
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v3
         with:
           name: docker-image-${{ github.head_ref }}
-          path: ${{ github.workspace }}/${{ github.repository }}-${{ github.head_ref }}.tar
-        continue-on-error: true # Allow subsequent steps even if upload fails
-
+          path: ${{ github.workspace }}/${{ github.repository }}-${{ github.head_ref
+            }}.tar
+        continue-on-error: true
   publish_to_dockerhub:
     name: Publish to Docker Hub
     needs: build_and_test
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.pull_request.merged && github.event.pull_request.base.ref == 'release' && startsWith(github.event.pull_request.head.ref, 'feature/')
-
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged &&
+      github.event.pull_request.base.ref == 'release' &&
+      startsWith(github.event.pull_request.head.ref, 'feature/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Docker login
-        run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
-
+        run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{
+          secrets.DOCKERHUB_TOKEN }}"
       - name: Load Docker Image Artifact
         uses: actions/download-artifact@v3
         with:
           name: docker-image-${{ github.head_ref }}
           path: .
-
       - name: Load Docker image
-        run: docker load --input ${{ github.workspace }}/${{ github.repository }}-${{ github.head_ref }}.tar
-
+        run: docker load --input ${{ github.workspace }}/${{ github.repository }}-${{
+          github.head_ref }}.tar
       - name: Tag Docker image
-        run: docker tag ${{ github.repository }}:${{ github.head_ref }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{ github.event.pull_request.head.ref }}
-
+        run: docker tag ${{ github.repository }}:${{ github.head_ref }} ${{
+          secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{
+          github.event.pull_request.head.ref }}
       - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{ github.event.pull_request.head.ref }}
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{
+          github.event.pull_request.head.ref }}
