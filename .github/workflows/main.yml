@@ -13,6 +13,7 @@ on:
       - synchronize
     branches:
       - release/**
+      - feature/**
 env:
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   IMAGE_NAME: ${{ github.repository }}
