@@ -1,79 +1,82 @@
----
+#.github/workflows/java-maven-docker-ci.yml
 name: Java CI with Maven and Docker
+
 on:
+  # Trigger on pushes to the main branch or any tags starting with 'v'
   push:
-    branches:
-      - ${{ var.RELEASE_BRANCH_NAME }}
-      - ${{ var.RELEASE_BRANCH_REGEX }}
-    tags:
-      - v*
+    branches: [ main ]
+    tags: [ 'v*' ]
+  # Trigger on pull requests opened or updated against the main branch
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-    branches:
-      - release/alpha/v1.0
-      - feature/alpha/v1.0
-      - release/*
-      - feature/*
+    types: [ opened, synchronize ]
+    branches: [ main ]
+
+# Define environment variables for Docker Hub - Use GitHub Variables/Secrets
 env:
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  IMAGE_NAME: ${{ github.repository }}
+  DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }} # Store Docker Hub username in GitHub Variables
+  # DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # Store Docker Hub PAT in GitHub Secrets (used directly in login step)
+  IMAGE_NAME: ${{ github.repository }} # Use repository name as image name (adjust if needed)
+
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    # Define permissions for the GITHUB_TOKEN if needed by actions
     permissions:
-      contents: read
-      packages: write
+      contents: read # Needed by checkout
+      packages: write # Example: if pushing to GHCR instead/as well
+      # id-token: write # Needed for OIDC authentication (e.g., AWS ECR)
+
     steps:
       - name: Checkout PR Code
         uses: actions/checkout@v4
         with:
+          # Checkout the head commit for pull requests for accurate testing
           ref: ${{ github.event.pull_request.head.sha || github.ref }}
-          fetch-depth: 0
+          fetch-depth: 0 # Fetch all history if needed by build tools (e.g., maven-release-plugin), otherwise default (1) is faster
+
       - name: Set up JDK 21 and Maven Cache
         uses: actions/setup-java@v4
         with:
-          java-version: "21"
-          distribution: temurin
-          cache: maven
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven' # Enable Maven dependency caching
+
       - name: Build with Maven
+        # -B runs in batch mode (non-interactive)
         run: mvn -B package --file pom.xml
+
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-          tags: >
+          tags: |
             # tag latest for default branch push
-
             type=edge,branch=${{ github.event.repository.default_branch }}
-
             # tag based on git tag (e.g., v1.0.0 -> 1.0.0)
-
             type=ref,event=tag
-
             # tag based on git branch name (e.g., feature/xyz -> feature-xyz) - only on pull_request or non-default branch push
-
             type=ref,event=branch,enable=${{ github.ref!= format('refs/heads/{0}', github.event.repository.default_branch) }}
-
             # tag based on short commit sha
-
             type=sha,prefix=sha-
+
       - name: Log in to Docker Hub
+        # Only log in if pushing (i.e., not a PR event typically, unless pushing directly from PR is desired)
         if: github.event_name!= 'pull_request'
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }} # Use the secret directly here
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: . # Use workspace context after checkout and build
           file: ./Dockerfile
+          # Push only on pushes to the default branch or tag pushes, not on PRs
           push: ${{ github.event_name!= 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          # Enable build cache for faster subsequent builds (requires buildx setup)
           cache-from: type=gha
           cache-to: type=gha,mode=max
