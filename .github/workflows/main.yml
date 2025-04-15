@@ -3,7 +3,8 @@ name: Java CI with Maven and Docker
 on:
   push:
     branches:
-      - release/alpha/v1.0
+      - ${{ var.RELEASE_BRANCH_NAME }}
+      - ${{ var.RELEASE_BRANCH_REGEX }}
     tags:
       - v*
   pull_request:
