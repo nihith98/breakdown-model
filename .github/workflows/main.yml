@@ -8,11 +8,11 @@ on:
   # Trigger on pull requests opened or updated against the main branch
   pull_request:
     types: [ opened, synchronize ]
-    branches: [ main ]
+    branches: [ 'release/**' ]
 
 # Define environment variables for Docker Hub - Use GitHub Variables/Secrets
 env:
-  DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }} # Store Docker Hub username in GitHub Variables
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }} # Store Docker Hub username in GitHub Variables
   # DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # Store Docker Hub PAT in GitHub Secrets (used directly in login step)
   IMAGE_NAME: ${{ github.repository }} # Use repository name as image name (adjust if needed)
 
