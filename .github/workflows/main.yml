@@ -7,7 +7,7 @@ on:
     tags: [ 'v*' ]
   # Trigger on pull requests opened or updated against the main branch
   pull_request:
-    types: [ opened, synchronize ]
+    types: [ opened, reopened, synchronize ]
     branches: [ 'release/**' ]
 
 # Define environment variables for Docker Hub - Use GitHub Variables/Secrets
