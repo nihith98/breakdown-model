@@ -12,6 +12,7 @@ on:
       - reopened
       - synchronize
     branches:
+      - release/alpha/v1.0
       - release/**
       - feature/**
 env:
