@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
     branches:
-      - 'release'
+      - 'release/*'
     paths:
       - '**' # Optional: Limit to changes in specific paths
   # Optional: Trigger on merge to release as well (adjust based on your flow)
