@@ -2,6 +2,8 @@
 name: Java CI with Maven and Docker
 on:
   push:
+    branches:
+      - feature/**
     tags:
       - v*
   pull_request:
