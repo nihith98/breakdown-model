@@ -1,71 +1,82 @@
----
-name: Feature to Release CI/CD
+name: Java CI with Maven and Docker
+
 on:
+  # Trigger on pushes to the main branch or any tags starting with 'v'
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  # Trigger on pull requests opened or updated against the main branch
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-    branches:
-      - release/**
-    paths:
-      - "**"
+    types: [ opened, synchronize ]
+    branches: [ main ]
+
+# Define environment variables for Docker Hub - Use GitHub Variables/Secrets
+env:
+  DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }} # Store Docker Hub username in GitHub Variables
+  # DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # Store Docker Hub PAT in GitHub Secrets (used directly in login step)
+  IMAGE_NAME: ${{ github.repository }} # Use repository name as image name (adjust if needed)
+
 jobs:
-  build_and_test:
-    name: Build, Test, and Analyze
+  build-and-publish:
     runs-on: ubuntu-latest
+    # Define permissions for the GITHUB_TOKEN if needed by actions
+    permissions:
+      contents: read # Needed by checkout
+      packages: write # Example: if pushing to GHCR instead/as well
+      # id-token: write # Needed for OIDC authentication (e.g., AWS ECR)
+
     steps:
-      - name: Echo Test
-        run: echo "Workflow started!"
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Set up JDK
-        uses: actions/setup-java@v3
+      - name: Checkout PR Code
+        uses: actions/checkout@v4
         with:
-          java-version: "17"
-          distribution: adoptopenjdk
+          # Checkout the head commit for pull requests for accurate testing
+          ref: ${{ github.event.pull_request.head.sha |
+| github.ref }}
+          fetch-depth: 0 # Fetch all history if needed by build tools (e.g., maven-release-plugin), otherwise default (1) is faster
+
+      - name: Set up JDK 21 and Maven Cache
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven' # Enable Maven dependency caching
+
       - name: Build with Maven
-        run: mvn clean package
-      - name: Run Unit Tests
-        run: mvn test
-      - name: Run Static Analysis (SpotBugs)
-        run: mvn spotbugs:check
-      - name: Build Docker image
-        if: github.event_name == 'pull_request'
-        run: docker build -t ${{ github.repository }}:${{ github.head_ref }} .
-      - name: Save Docker Image Artifact
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v3
+        # -B runs in batch mode (non-interactive)
+        run: mvn -B package --file pom.xml
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          name: docker-image-${{ github.head_ref }}
-          path: ${{ github.workspace }}/${{ github.repository }}-${{ github.head_ref
-            }}.tar
-        continue-on-error: true
-  publish_to_dockerhub:
-    name: Publish to Docker Hub
-    needs: build_and_test
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.pull_request.merged &&
-      github.event.pull_request.base.ref == 'release' &&
-      startsWith(github.event.pull_request.head.ref, 'feature/')
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Docker login
-        run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{
-          secrets.DOCKERHUB_TOKEN }}"
-      - name: Load Docker Image Artifact
-        uses: actions/download-artifact@v3
+          images: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
+          tags: |
+            # tag latest for default branch push
+            type=edge,branch=${{ github.event.repository.default_branch }}
+            # tag based on git tag (e.g., v1.0.0 -> 1.0.0)
+            type=ref,event=tag
+            # tag based on git branch name (e.g., feature/xyz -> feature-xyz) - only on pull_request or non-default branch push
+            type=ref,event=branch,enable=${{ github.ref!= format('refs/heads/{0}', github.event.repository.default_branch) }}
+            # tag based on short commit sha
+            type=sha,prefix=sha-
+
+      - name: Log in to Docker Hub
+        # Only log in if pushing (i.e., not a PR event typically, unless pushing directly from PR is desired)
+        if: github.event_name!= 'pull_request'
+        uses: docker/login-action@v3
         with:
-          name: docker-image-${{ github.head_ref }}
-          path: .
-      - name: Load Docker image
-        run: docker load --input ${{ github.workspace }}/${{ github.repository }}-${{
-          github.head_ref }}.tar
-      - name: Tag Docker image
-        run: docker tag ${{ github.repository }}:${{ github.head_ref }} ${{
-          secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{
-          github.event.pull_request.head.ref }}
-      - name: Push Docker image to Docker Hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository }}:${{
-          github.event.pull_request.head.ref }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }} # Use the secret directly here
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context:. # Use workspace context after checkout and build
+          file:./Dockerfile
+          # Push only on pushes to the default branch or tag pushes, not on PRs
+          push: ${{ github.event_name!= 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Enable build cache for faster subsequent builds (requires buildx setup)
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
