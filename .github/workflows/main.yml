@@ -67,7 +67,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: . # Use workspace context after checkout and build
-          file: ./dockerfile
+          file: ./Dockerfile
           # Push only on pushes to the default branch or tag pushes, not on PRs
           push: ${{ github.event_name!= 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
