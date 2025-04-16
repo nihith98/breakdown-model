@@ -52,7 +52,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}
-          tags: type=sha,prefix=sha-
+          tags: type=semver,pattern={{version}}
             
 
       - name: Log in to Docker Hub
