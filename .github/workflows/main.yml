@@ -63,9 +63,7 @@ jobs:
         with:
           # Use the output 'version' from the 'project' step
           images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.repository_owner }}/my-app # Example image name
-          tags: |
-            type=value,value=${{ steps.project.outputs.version }}
-            type=raw,value=latest,enable={{is_default_branch}}
+          tags: type=value,value=${{ steps.project.outputs.version }}
             
 
       - name: Log in to Docker Hub
