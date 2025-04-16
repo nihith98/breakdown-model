@@ -15,7 +15,7 @@ on:
 env:
   DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME }} # Store Docker Hub username in GitHub Variables
   # DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }} # Store Docker Hub PAT in GitHub Secrets (used directly in login step)
-  IMAGE_NAME: ${{ github.repository }} # Use repository name as image name (adjust if needed)
+  IMAGE_NAME: ${{ github.event.repository.name }} # Use repository name as image name (adjust if needed)
 
 jobs:
   build-and-publish:
