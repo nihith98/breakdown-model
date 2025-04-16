@@ -62,7 +62,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           # Use the output 'version' from the 'project' step
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }} # Example image name
+          images: ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKERHUB_REPONAME }}/${{ env.IMAGE_NAME }} # Example image name
           tags: type=raw,value=${{ steps.project.outputs.version }}
             
 
