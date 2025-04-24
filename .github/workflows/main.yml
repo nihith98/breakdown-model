@@ -53,18 +53,42 @@ jobs:
         # This ensures the correct syntax is expected
         shell: powershell
         run: |
-          # Use PowerShell syntax to capture output
-          $VERSION = (mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Attempting to get project version..."
+          # Run the Maven command and capture its output
+          $MavenOutput = (mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
 
-          # Optional: Trim whitespace if Maven adds any extra newlines/spaces
-          $VERSION = $VERSION.Trim()
+          # Try to parse the output as XML
+          try {
+              [xml]$PomXml = $MavenOutput
+              # Navigate the XML structure to get the version
+              # Check common locations (root project version)
+              if ($PomXml.project -and $PomXml.project.version) {
+                  $VERSION = $PomXml.project.version
+              } else {
+                  # Handle cases where output might just be the version or other structure
+                  # Fallback or add more specific parsing if needed
+                  echo "WARN: Could not find version via standard XML path, checking root node."
+                  $VERSION = $PomXml.OuterXml # Or some other logic if needed
+              }
+              
+              # If $VERSION is still XML or empty, parsing likely failed logically
+              if ($VERSION -like '<*>' -or -not $VERSION) {
+                   echo "ERROR: Failed to extract version string from XML."
+                   exit 1 # Exit script with error
+              }
 
-          # Optional: Print the version to the log
-          echo "Detected Project Version: $VERSION"
+              $VERSION = $VERSION.Trim() # Trim whitespace
 
-          # Set the version as an output variable for use in later steps
-          # Note the use of $env:GITHUB_OUTPUT for PowerShell
-          echo "version=$VERSION" >> $env:GITHUB_OUTPUT
+              echo "Detected Project Version: $VERSION"
+              echo "version=$VERSION" >> $env:GITHUB_OUTPUT
+
+          } catch {
+              # Catch errors if $MavenOutput wasn't valid XML
+              echo "ERROR: Failed to parse Maven output as XML."
+              echo "Maven output was:"
+              echo "$MavenOutput"
+              exit 1 # Exit script with error
+          }
 
       - name: Extract Docker metadata
         id: meta
