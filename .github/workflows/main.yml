@@ -51,7 +51,7 @@ jobs:
         id: get_version # Optional: Give the step an ID if you need the version later
         # Specify PowerShell (pwsh is usually preferred if available)
         # This ensures the correct syntax is expected
-        shell: pwsh
+        shell: powershell
         run: |
           # Use PowerShell syntax to capture output
           $VERSION = (mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
