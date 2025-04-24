@@ -53,25 +53,46 @@ jobs:
         # This ensures the correct syntax is expected
         shell: powershell
         run: |
-          echo "Attempting to get project version..."
-          # Run the Maven command and capture its potentially incomplete output
-          $MavenOutput = (mvn help:evaluate -Dexpression=project.version -DforceStdout)
+          echo "Reading version directly from pom.xml..."
+          try {
+              # Define the path to pom.xml (usually at the root after checkout)
+              $PomPath = "pom.xml"
 
-          # Use Regex to find the version tag after the specific artifactId
-          # (?s) lets '.' match newlines. .*? is non-greedy.
-          if ($MavenOutput -match '(?s)<artifactId>breakdown-model</artifactId>.*?<version>(.+?)</version>') {
-              # $matches[1] contains the captured group (the content inside <version>)
-              $VERSION = $matches[1].Trim()
-              
-              echo "Detected Project Version (via regex): $VERSION"
+              # Check if the file exists
+              if (-not (Test-Path $PomPath)) {
+                  echo "ERROR: pom.xml not found at $PomPath"
+                  exit 1 # Exit with error
+              }
+
+              # Read the entire file content and parse it as XML
+              # Using -Raw ensures it reads the whole file as one string
+              [xml]$PomXml = Get-Content -Path $PomPath -Raw
+
+              # Extract the version string from the parsed XML object
+              # $PomXml.project refers to the root <project> element
+              $VERSION = $PomXml.project.version
+
+              # Check if version was actually found in the XML structure
+              if (-not $VERSION) {
+                  echo "ERROR: Could not find project version within pom.xml structure."
+                  # Optional: Display part of the parsed XML structure for debugging
+                  # echo ($PomXml.project | Format-List *)
+                  exit 1 # Exit with error
+              }
+
+              # Trim any potential whitespace
+              $VERSION = $VERSION.Trim()
+
+              echo "Detected Project Version (from pom.xml): $VERSION"
+              # Set the output variable for subsequent steps
               echo "version=$VERSION" >> $env:GITHUB_OUTPUT
-          } else {
-              # Regex did not find the pattern
-              echo "ERROR: Could not extract project version using regex."
-              echo "Maven output was:"
-              # Log first few lines of output for context, avoid flooding logs
-              echo ($MavenOutput | Select-Object -First 20) 
-              exit 1 # Exit script with error
+
+          } catch {
+              # Catch any errors during file reading or XML parsing
+              echo "ERROR: Failed to read or parse pom.xml."
+              # Output the specific error caught by PowerShell
+              Write-Error $_
+              exit 1 # Exit with error
           }
 
       - name: Extract Docker metadata
