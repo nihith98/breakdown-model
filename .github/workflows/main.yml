@@ -70,7 +70,7 @@ jobs:
               echo "ERROR: Could not extract project version using regex."
               echo "Maven output was:"
               # Log first few lines of output for context, avoid flooding logs
-              echo ($MavenOutput | Select-Object -First 5) 
+              echo $MavenOutput
               exit 1 # Exit script with error
           }
 
