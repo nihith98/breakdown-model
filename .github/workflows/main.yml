@@ -48,14 +48,23 @@ jobs:
 
 
       - name: Extract Maven project version
-        id: project # Give this step an ID
+        id: get_version # Optional: Give the step an ID if you need the version later
+        # Specify PowerShell (pwsh is usually preferred if available)
+        # This ensures the correct syntax is expected
+        shell: pwsh
         run: |
-          # -q is quiet, -DforceStdout ensures output goes to stdout even if long
-          # help:evaluate gets a property, project.version is the standard version property
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "Project version: $VERSION"
-          # Set the version as an output of this step
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          # Use PowerShell syntax to capture output
+          $VERSION = (mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
+          # Optional: Trim whitespace if Maven adds any extra newlines/spaces
+          $VERSION = $VERSION.Trim()
+
+          # Optional: Print the version to the log
+          echo "Detected Project Version: $VERSION"
+
+          # Set the version as an output variable for use in later steps
+          # Note the use of $env:GITHUB_OUTPUT for PowerShell
+          echo "version=$VERSION" >> $env:GITHUB_OUTPUT
 
       - name: Extract Docker metadata
         id: meta
