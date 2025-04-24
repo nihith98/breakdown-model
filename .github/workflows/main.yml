@@ -27,6 +27,10 @@ jobs:
       # id-token: write # Needed for OIDC authentication (e.g., AWS ECR)
 
     steps:
+      - name: Mark Workspace as Safe Directory
+        shell: powershell # Use powershell or pwsh
+        run: git config --global --add safe.directory $env:GITHUB_WORKSPACE
+    
       - name: Checkout PR Code
         uses: actions/checkout@v4
         with:
