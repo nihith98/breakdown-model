@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "Attempting to get project version..."
           # Run the Maven command and capture its potentially incomplete output
-          $MavenOutput = (mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          $MavenOutput = (mvn help:evaluate -Dexpression=project.version -DforceStdout)
 
           # Use Regex to find the version tag after the specific artifactId
           # (?s) lets '.' match newlines. .*? is non-greedy.
