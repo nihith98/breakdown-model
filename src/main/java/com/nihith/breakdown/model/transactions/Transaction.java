@@ -36,6 +36,15 @@ public class Transaction {
     private Date timestamp;
     @NotEmpty
     private String groupId;
+    private TransactionStatus transactionStatus;
+
+    public TransactionStatus getTransactionStatus() {
+        return transactionStatus;
+    }
+
+    public void setTransactionStatus(TransactionStatus transactionStatus) {
+        this.transactionStatus = transactionStatus;
+    }
 
     public Transaction() {
         this.uuid = UUID.randomUUID().toString();
@@ -94,7 +103,7 @@ public class Transaction {
     }
 
     public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+        this.amount = amount.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
 

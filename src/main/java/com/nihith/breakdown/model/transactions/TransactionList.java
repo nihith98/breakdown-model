@@ -11,14 +11,16 @@ public class TransactionList {
 
     private String id;
     private String groupId;
-    private List<Transaction> TransactionList;
+    private List<Transaction> transactionList;
+    private List<Transaction> settlementList;
     private BigDecimal totalExpenditure;
 
     public TransactionList(String groupId, List<Transaction> transactionList, TransactionType type, BigDecimal totalExpenditure) {
         this.groupId = groupId;
-        TransactionList = transactionList;
+        this.transactionList = transactionList;
         this.totalExpenditure = totalExpenditure;
     }
+
 
     public TransactionList(String groupId) {
         this.groupId = groupId;
@@ -34,11 +36,11 @@ public class TransactionList {
     }
 
     public List<Transaction> getTransactionList() {
-        return TransactionList;
+        return transactionList;
     }
 
     public void setTransactionList(List<Transaction> transactionList) {
-        TransactionList = transactionList;
+        transactionList = transactionList;
     }
 
     public BigDecimal getTotalExpenditure() {
@@ -49,13 +51,22 @@ public class TransactionList {
         this.totalExpenditure = totalExpenditure;
     }
 
+    public List<Transaction> getSettlementList() {
+        return settlementList;
+    }
+
+    public void setSettlementList(List<Transaction> settlementList) {
+        this.settlementList = settlementList;
+    }
+
     @Override
     public String toString() {
         return "TransactionList{" +
-                "groupId='" + groupId + '\'' +
-                ", TransactionList=" + TransactionList +
+                "id='" + id + '\'' +
+                ", groupId='" + groupId + '\'' +
+                ", transactionList=" + transactionList +
+                ", settlementList=" + settlementList +
                 ", totalExpenditure=" + totalExpenditure +
                 '}';
     }
-
 }
