@@ -12,4 +12,10 @@ public interface TransactionDBService {
 
     public List<Transaction> fetchTransaction(String groupId);
 
+    public List<Transaction> fetchExpenseList(String groupId);
+
+    public List<Transaction> fetchSettlementList(String groupId);
+
+    public boolean updateSettlementList(String groupId, List<Transaction> settlementList);
+
 }

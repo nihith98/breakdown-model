@@ -8,6 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ObjectMapperUtil {
 
     public static final Logger logger = LogManager.getLogger(ObjectMapperUtil.class);
@@ -34,5 +37,17 @@ public class ObjectMapperUtil {
         }
     }
 
+    public static <T> List<Document> castToDocumentList(List<T> pojoList) {
+
+        logger.info("Entered castToDocumentList");
+        List<Document> documentList = new ArrayList<>();
+        try {
+            documentList = pojoList.parallelStream().map(ObjectMapperUtil::castToDocument).toList();
+        } catch (Exception e) {
+            logger.error(ExceptionUtils.getStackTrace(e));
+            throw new SystemException(e);
+        }
+        return documentList;
+    }
 
 }

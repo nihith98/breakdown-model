@@ -3,14 +3,22 @@ package com.nihith.breakdown.test.model.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nihith.breakdown.model.exceptions.SystemException;
 import com.nihith.breakdown.model.util.ObjectMapperUtil;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+
+import static com.nihith.breakdown.model.util.ObjectMapperUtil.castToDocumentList;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ObjectMapperUtil.class)
@@ -60,6 +68,23 @@ class ObjectMapperUtilTest {
 
         assertThrows(NullPointerException.class, () -> ObjectMapperUtil.castToObject(null, MyTestObject.class));
     }
+
+
+
+    @Test
+    void testCastToDocumentList_emptyList() {
+        // Arrange
+        List<String> pojoList = List.of();
+        List<Document> expectedDocumentList = List.of();
+
+        // Act
+        List<Document> actualDocumentList = castToDocumentList(pojoList);
+
+        // Assert
+        assertEquals(expectedDocumentList, actualDocumentList);
+    }
+
+
 
 
     // Example Test Object for testing
