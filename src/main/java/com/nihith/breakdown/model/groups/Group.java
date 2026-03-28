@@ -1,6 +1,7 @@
 package com.nihith.breakdown.model.groups;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.nihith.breakdown.model.constants.Operation;
 
 import java.util.List;
 
@@ -8,8 +9,24 @@ import java.util.List;
 public class Group {
     String groupId;
     String groupName;
+    String createdById;
     List<String> personList;
     List<Family> familyList;
+    Operation operation;
+
+    public Operation getOperation() {
+        return operation;
+    }
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
+    public String getCreatedById() {
+        return createdById;
+    }
+    public void setCreatedById(String createdById) {
+        this.createdById = createdById;
+    }
 
     public String getGroupId() {
         return groupId;

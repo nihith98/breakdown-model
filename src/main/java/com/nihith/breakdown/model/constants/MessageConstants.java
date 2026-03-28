@@ -10,6 +10,8 @@ public class MessageConstants {
     public static final String TRANSACTION_INSERT_SUCCESS = "Successfully Inserted Transaction";
     public static final String TRANSACTION_DELETE_SUCCESS = "Successfully Deleted Transaction";
     public static final String TRANSACTION_LIST_FETCH_SUCCESS = "Successfully Fetched Transaction List";
+    public static final String GROUP_CREATION_FAILURE = "Group Creation Failed";
+    public static final String GROUP_CREATION_SUCCESS = "Group Created Successfully";
 
 
 }
