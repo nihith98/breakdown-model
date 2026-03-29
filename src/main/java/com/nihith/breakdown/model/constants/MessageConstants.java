@@ -14,4 +14,10 @@ public class MessageConstants {
     public static final String GROUP_CREATION_SUCCESS = "Group Created Successfully";
 
 
+    public static final String ADD_MEMBERS_SUCCESS = "Members Added Successfully";
+    public static final String ADD_MEMBERS_FAILURE = "Failed to Add Members";
+
+    public static final String MANAGE_FAMILIES_SUCCESS = "Families Updated Successfully";
+    public static final String MANAGE_FAMILIES_FAILURE = "Failed to Update Families";
+
 }

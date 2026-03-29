@@ -26,7 +26,7 @@ public interface GroupDBService {
      * Adds new members to an existing group.
      *
      * @param groupId       the unique identifier of the group to update
-     * @param newPersonList list of new member IDs to add to the group
+     * @param request list of new member IDs to add to the group
      * @return {@code true} if the update was successful, {@code false} otherwise
      * @throws SystemException if a database error prevents the update
      */
@@ -52,6 +52,16 @@ public interface GroupDBService {
      * @throws SystemException if the group is not found or a database error occurs
      */
     public boolean upsertFamily(String groupId, Family updatedFamily) throws SystemException;
+
+    /**
+     * Persists the family list of an already-hydrated group object by replacing the group
+     * document in the data store via a delete-and-insert.
+     *
+     * @param updatedGroup the {@link Group} object with the new {@code familyList} already set
+     * @return {@code true} if the group was updated successfully, {@code false} otherwise
+     * @throws SystemException if a database error prevents the update
+     */
+    public boolean updateFamilyList(Group updatedGroup) throws SystemException;
 
     /**
      * Fetches the full details of the group identified by the given ID.
