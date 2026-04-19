@@ -13,7 +13,28 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Model for storing information about single transaction
+ * Model for storing information about a single transaction.
+ *
+ * <p>Supports two transaction types:
+ * <ul>
+ *   <li><b>EXPENSE:</b> A transaction where one member pays for others. The {@code paidById} is the payer,
+ *       and {@code paidForList} contains the beneficiaries and their share amounts.</li>
+ *   <li><b>SETTLEMENT:</b> A transaction representing a payment from one party (individual or family)
+ *       to another to clear outstanding balances. Automatically computed by the settlement engine.</li>
+ * </ul>
+ *
+ * <p><b>Family-Level Settlements:</b> When a group contains families, settlement transactions are
+ * computed at the family level. The {@code familyId} field identifies the settling family:
+ * <ul>
+ *   <li><b>SETTLEMENT with familyId:</b> Represents a family paying another party. The family's
+ *       individually tracked member balances are aggregated, and the settlement represents the
+ *       family's collective debt or credit.</li>
+ *   <li><b>SETTLEMENT without familyId (null):</b> Represents an individual member settling a debt,
+ *       used only in groups without families or for members not part of any family.</li>
+ * </ul>
+ *
+ * <p><b>Amount Precision:</b> All amount values are scaled to 2 decimal places using
+ * {@link java.math.RoundingMode#HALF_UP} rounding.
  */
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -36,6 +57,18 @@ public class Transaction {
     private Date timestamp;
     @NotEmpty
     private String groupId;
+    /**
+     * The family ID associated with a settlement transaction, identifying which family
+     * owns the debt. Only populated for SETTLEMENT-type transactions computed at family level.
+     * {@code null} for EXPENSE transactions and SETTLEMENT transactions involving individuals
+     * not part of any family.
+     *
+     * <p><b>Usage:</b> When a group contains families, the settlement engine aggregates individual
+     * member balances to the family level and computes settlements between families. Each settlement
+     * transaction includes the payer family's ID in this field to distinguish family-level
+     * settlements from individual settlements.</p>
+     */
+    private String familyId;
     private TransactionStatus transactionStatus;
 
     public TransactionStatus getTransactionStatus() {
@@ -63,6 +96,7 @@ public class Transaction {
                 ", splitType=" + splitType +
                 ", timestamp=" + timestamp +
                 ", groupId='" + groupId + '\'' +
+                ", familyId='" + familyId + '\'' +
                 '}';
     }
 
@@ -145,5 +179,27 @@ public class Transaction {
 
     public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
+    }
+
+    /**
+     * Gets the family ID associated with this settlement transaction.
+     *
+     * @return the family ID if this is a SETTLEMENT-type transaction computed at family level,
+     *         {@code null} otherwise
+     */
+    public String getFamilyId() {
+        return familyId;
+    }
+
+    /**
+     * Sets the family ID to identify which family owns the debt in a settlement transaction.
+     * This field should only be populated for SETTLEMENT-type transactions computed at the
+     * family level. Individual settlements should leave this as {@code null}.
+     *
+     * @param familyId the family ID (typically the UUID of the family), or {@code null} for
+     *                 individual settlements
+     */
+    public void setFamilyId(String familyId) {
+        this.familyId = familyId;
     }
 }

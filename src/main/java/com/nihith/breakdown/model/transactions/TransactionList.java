@@ -39,8 +39,14 @@ public class TransactionList {
         return transactionList;
     }
 
+    /**
+     * Sets the list of expense transactions for this transaction list.
+     * Note: Must use {@code this.transactionList} assignment to properly update the field.
+     *
+     * @param transactionList the list of expense transactions to set (EXPENSE-type transactions)
+     */
     public void setTransactionList(List<Transaction> transactionList) {
-        transactionList = transactionList;
+        this.transactionList = transactionList;
     }
 
     public BigDecimal getTotalExpenditure() {
