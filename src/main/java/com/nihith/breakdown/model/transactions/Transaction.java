@@ -136,8 +136,15 @@ public class Transaction {
         return amount;
     }
 
+    /**
+     * Sets the transaction amount with proper scale precision.
+     * Handles null values gracefully by setting the field to null.
+     * Non-null amounts are scaled to 2 decimal places using HALF_UP rounding.
+     *
+     * @param amount the transaction amount, or null if not applicable
+     */
     public void setAmount(BigDecimal amount) {
-        this.amount = amount.setScale(2, BigDecimal.ROUND_HALF_UP);
+        this.amount = amount != null ? amount.setScale(2, BigDecimal.ROUND_HALF_UP) : null;
     }
 
 
