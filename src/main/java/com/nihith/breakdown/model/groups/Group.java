@@ -2,6 +2,7 @@ package com.nihith.breakdown.model.groups;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nihith.breakdown.model.constants.Operation;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ public class Group {
     String createdById;
     List<String> personList;
     List<Family> familyList;
+    @Size(max = 255, message = "Group description cannot exceed 255 characters")
+    String groupDescription;
     Operation operation;
 
     public Operation getOperation() {
@@ -60,11 +63,20 @@ public class Group {
         this.familyList = familyList;
     }
 
+    public String getGroupDescription() {
+        return groupDescription;
+    }
+
+    public void setGroupDescription(String groupDescription) {
+        this.groupDescription = groupDescription;
+    }
+
     @Override
     public String toString() {
         return "Group{" +
                 "groupId='" + groupId + '\'' +
                 ", groupName='" + groupName + '\'' +
+                ", groupDescription='" + groupDescription + '\'' +
                 ", personList=" + personList +
                 ", familyList=" + familyList +
                 '}';
