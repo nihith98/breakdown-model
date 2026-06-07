@@ -72,4 +72,15 @@ public interface GroupDBService {
      */
     public Group fetchGroupDetails(String groupId) throws SystemException;
 
+    /**
+     * Adds a user to a group by joining code.
+     * The user ID is identified by the X-User-Id header and added to the group's personList.
+     *
+     * @param joiningCode the unique joining code of the group to join
+     * @param userId      the unique identifier of the user joining the group
+     * @return {@code true} if the user was successfully added to the group, {@code false} otherwise
+     * @throws SystemException if the group is not found, user is already a member, or a database error occurs
+     */
+    public boolean joinGroupByCode(String joiningCode, String userId) throws SystemException;
+
 }

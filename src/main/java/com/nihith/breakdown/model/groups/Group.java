@@ -9,6 +9,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Group {
     String groupId;
+    String joiningCode;
     String groupName;
     String createdById;
     List<String> personList;
@@ -16,6 +17,7 @@ public class Group {
     @Size(max = 255, message = "Group description cannot exceed 255 characters")
     String groupDescription;
     Operation operation;
+    Long lastUpdatedTimestamp;
 
     public Operation getOperation() {
         return operation;
@@ -37,6 +39,14 @@ public class Group {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public String getJoiningCode() {
+        return joiningCode;
+    }
+
+    public void setJoiningCode(String joiningCode) {
+        this.joiningCode = joiningCode;
     }
 
     public String getGroupName() {
@@ -71,10 +81,19 @@ public class Group {
         this.groupDescription = groupDescription;
     }
 
+    public Long getLastUpdatedTimestamp() {
+        return lastUpdatedTimestamp;
+    }
+
+    public void setLastUpdatedTimestamp(Long lastUpdatedTimestamp) {
+        this.lastUpdatedTimestamp = lastUpdatedTimestamp;
+    }
+
     @Override
     public String toString() {
         return "Group{" +
                 "groupId='" + groupId + '\'' +
+                ", joiningCode='" + joiningCode + '\'' +
                 ", groupName='" + groupName + '\'' +
                 ", groupDescription='" + groupDescription + '\'' +
                 ", personList=" + personList +

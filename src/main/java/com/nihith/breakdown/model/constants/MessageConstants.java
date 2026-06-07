@@ -20,4 +20,10 @@ public class MessageConstants {
     public static final String MANAGE_FAMILIES_SUCCESS = "Families Updated Successfully";
     public static final String MANAGE_FAMILIES_FAILURE = "Failed to Update Families";
 
+    public static final String JOIN_GROUP_SUCCESS = "Joined group successfully";
+    public static final String JOIN_GROUP_FAILURE = "Failed to join group";
+
+    public static final String GROUP_LIST_FETCH_SUCCESS = "Successfully Fetched Group List";
+    public static final String GROUP_LIST_FETCH_FAILURE = "Failed to Fetch Group List";
+
 }
