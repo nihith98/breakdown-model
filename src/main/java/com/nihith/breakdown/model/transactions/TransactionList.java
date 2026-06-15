@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -14,6 +15,7 @@ public class TransactionList {
     private List<Transaction> transactionList;
     private List<Transaction> settlementList;
     private BigDecimal totalExpenditure;
+    private Map<String, String> memberMap;
 
     public TransactionList(String groupId, List<Transaction> transactionList, TransactionType type, BigDecimal totalExpenditure) {
         this.groupId = groupId;
@@ -65,6 +67,14 @@ public class TransactionList {
         this.settlementList = settlementList;
     }
 
+    public Map<String, String> getMemberMap() {
+        return memberMap;
+    }
+
+    public void setMemberMap(Map<String, String> memberMap) {
+        this.memberMap = memberMap;
+    }
+
     @Override
     public String toString() {
         return "TransactionList{" +
@@ -73,6 +83,7 @@ public class TransactionList {
                 ", transactionList=" + transactionList +
                 ", settlementList=" + settlementList +
                 ", totalExpenditure=" + totalExpenditure +
+                ", memberMap=" + memberMap +
                 '}';
     }
 }

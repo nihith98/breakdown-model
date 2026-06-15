@@ -9,6 +9,7 @@ public class PaidFor {
     @NotEmpty
     private String paidForId;
     private double paidForValue;
+    private String paidForName;
 
     public String getPaidForId() {
         return paidForId;
@@ -26,11 +27,20 @@ public class PaidFor {
         this.paidForValue = paidForValue;
     }
 
+    public String getPaidForName() {
+        return paidForName;
+    }
+
+    public void setPaidForName(String paidForName) {
+        this.paidForName = paidForName;
+    }
+
     @Override
     public String toString() {
         return "PaidFor{" +
                 "paidForId='" + paidForId + '\'' +
                 ", paidForValue=" + paidForValue +
+                ", paidForName='" + paidForName + '\'' +
                 '}';
     }
 }

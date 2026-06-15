@@ -26,4 +26,7 @@ public class MessageConstants {
     public static final String GROUP_LIST_FETCH_SUCCESS = "Successfully Fetched Group List";
     public static final String GROUP_LIST_FETCH_FAILURE = "Failed to Fetch Group List";
 
+    public static final String GROUP_DETAILS_FETCH_SUCCESS = "Successfully Fetched Group Details";
+    public static final String GROUP_DETAILS_FETCH_FAILURE = "Failed to Fetch Group Details";
+
 }

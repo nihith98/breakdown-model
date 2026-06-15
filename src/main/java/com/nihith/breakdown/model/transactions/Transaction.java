@@ -51,6 +51,7 @@ public class Transaction {
     private BigDecimal amount;
     @NotEmpty
     private String paidById;
+    private String paidByName;
     @NotNull
     private List<PaidFor> paidForList;
     private SplitType splitType;
@@ -92,6 +93,7 @@ public class Transaction {
                 ", transactionType=" + transactionType +
                 ", amount=" + amount +
                 ", paidById='" + paidById + '\'' +
+                ", paidByName='" + paidByName + '\'' +
                 ", paidForList=" + paidForList +
                 ", splitType=" + splitType +
                 ", timestamp=" + timestamp +
@@ -178,6 +180,14 @@ public class Transaction {
 
     public void setPaidById(String paidById) {
         this.paidById = paidById;
+    }
+
+    public String getPaidByName() {
+        return paidByName;
+    }
+
+    public void setPaidByName(String paidByName) {
+        this.paidByName = paidByName;
     }
 
     public TransactionType getTransactionType() {
