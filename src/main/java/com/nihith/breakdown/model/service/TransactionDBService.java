@@ -20,6 +20,17 @@ public interface TransactionDBService {
     public boolean insertTransaction(Transaction transaction);
 
     /**
+     * Replaces an existing transaction record in the data store with the provided transaction,
+     * matched by {@code uuid}. Implementations are expected to delete the existing record before
+     * inserting the updated one.
+     *
+     * @param transaction the transaction containing the updated fields; {@code uuid} identifies
+     *                     the record to replace
+     * @return {@code true} if the update was successful, {@code false} otherwise
+     */
+    public boolean updateTransaction(Transaction transaction);
+
+    /**
      * Removes the transaction identified by the given ID from the data store.
      *
      * @param transactionId the unique identifier of the transaction to delete

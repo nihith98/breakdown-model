@@ -83,4 +83,26 @@ public interface GroupDBService {
      */
     public boolean joinGroupByCode(String joiningCode, String userId) throws SystemException;
 
+    /**
+     * Removes a user from a group's member list. The user is also removed from any family's
+     * {@code personIds} list it belongs to.
+     *
+     * @param groupId the unique identifier of the group to update
+     * @param userId  the unique identifier of the user to remove
+     * @return {@code true} if the user was successfully removed, {@code false} otherwise
+     * @throws SystemException if the group is not found or a database error occurs
+     */
+    public boolean removeMember(String groupId, String userId) throws SystemException;
+
+    /**
+     * Updates the {@code lastUpdatedTimestamp} field of a group to mark it as recently modified,
+     * without touching any other field.
+     *
+     * @param groupId   the unique identifier of the group to update
+     * @param timestamp the new {@code lastUpdatedTimestamp} value (epoch milliseconds)
+     * @return {@code true} if the update was successful, {@code false} otherwise
+     * @throws SystemException if the group is not found or a database error occurs
+     */
+    public boolean touchLastUpdatedTimestamp(String groupId, Long timestamp) throws SystemException;
+
 }

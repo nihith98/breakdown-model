@@ -29,4 +29,14 @@ public class MessageConstants {
     public static final String GROUP_DETAILS_FETCH_SUCCESS = "Successfully Fetched Group Details";
     public static final String GROUP_DETAILS_FETCH_FAILURE = "Failed to Fetch Group Details";
 
+    public static final String TRANSACTION_UPDATE_SUCCESS = "Successfully Updated Transaction";
+    public static final String TRANSACTION_UPDATE_FAILURE = "Failed to Update Transaction";
+
+    public static final String GROUP_INFORMATION_FETCH_SUCCESS = "Successfully Fetched Group Information";
+    public static final String GROUP_INFORMATION_FETCH_FAILURE = "Failed to Fetch Group Information";
+
+    public static final String REMOVE_MEMBER_SUCCESS = "Member Removed Successfully";
+    public static final String REMOVE_MEMBER_FAILURE = "Failed to Remove Member";
+    public static final String REMOVE_MEMBER_BALANCE_PENDING = "Cannot remove member with an outstanding balance";
+
 }
