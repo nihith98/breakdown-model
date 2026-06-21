@@ -9,6 +9,7 @@ public class Family {
 
     private String familyName;
     private String familyId;
+    private String familyHex;
     private List<String> personIds;
 
     public String getFamilyName() {
@@ -27,6 +28,14 @@ public class Family {
         this.familyId = familyId;
     }
 
+    public String getFamilyHex() {
+        return familyHex;
+    }
+
+    public void setFamilyHex(String familyHex) {
+        this.familyHex = familyHex;
+    }
+
     public List<String> getPersonIds() {
         return personIds;
     }
@@ -40,6 +49,7 @@ public class Family {
         return "Family{" +
                 "familyName='" + familyName + '\'' +
                 ", familyId='" + familyId + '\'' +
+                ", familyHex='" + familyHex + '\'' +
                 ", personIds=" + personIds +
                 '}';
     }

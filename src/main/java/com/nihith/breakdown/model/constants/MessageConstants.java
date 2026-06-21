@@ -39,4 +39,7 @@ public class MessageConstants {
     public static final String REMOVE_MEMBER_FAILURE = "Failed to Remove Member";
     public static final String REMOVE_MEMBER_BALANCE_PENDING = "Cannot remove member with an outstanding balance";
 
+    public static final String DASHBOARD_SUMMARY_FETCH_SUCCESS = "Dashboard summary fetched";
+    public static final String DASHBOARD_SUMMARY_FETCH_FAILURE = "Failed to fetch dashboard summary";
+
 }
